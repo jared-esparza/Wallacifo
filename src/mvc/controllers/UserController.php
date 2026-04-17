@@ -1,17 +1,18 @@
 <?php
 class UserController extends Controller{
     public function index(){
+        Auth::admin();
         return $this->list();
     }
 
     public function list(int $page = 1){
-
+        Auth::admin();
         $filtro = Filter::apply('users');
         $total = $filtro ? User::filteredResults($filtro): User::total();
         $limit = RESULTS_PER_PAGE;
         $paginator = new Paginator('/User/list', $page, $limit, $total);
 
-        $users = $filtro ? User::filter($filtro, $limit, $paginator->getOffset()): User::orderBy('titulo', 'DESC', $limit, $paginator->getOffset());
+        $users = $filtro ? User::filter($filtro, $limit, $paginator->getOffset()): User::orderBy('displayname', 'DESC', $limit, $paginator->getOffset());
 
         return view('user/list', ['users'=>$users, 'paginator'=>$paginator, 'filtro'=>$filtro]);
     }
@@ -22,30 +23,22 @@ class UserController extends Controller{
     }
 
     public function create(){
-        if(Login::guest()){
-            Session::error("No puedes realizar esta operación sin autenticarte.");
-            return redirect('/Login');
-        }
         return view('user/create');
     }
 
     public function store(){
-        if(!Login::oneRole(USER_ROLES)){
-            Session::error("No puedes realizar esta operación.");
-            return redirect('/Login');
-        }
         if(!request()->has('guardar')){
             throw new FormException("No se recibió el formulario");
         }
         try{
             $user = User::create(request()->posts());
 
-
+            $user->addRole('ROLE_USER');
             $file = request()->file('imagen', 8000000, ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
             if($file){
                 $user->portada = $file->store('../public/' . ANUNCIO_IMAGE_FOLDER, 'user_');
-                $user->update();
             }
+            $user->update();
             Session::success("Guardado del user $user->titulo correcto.");
             return redirect("/user/show/$user->id");
         }catch(SQLException $e){
@@ -69,18 +62,12 @@ class UserController extends Controller{
     }
 
     public function edit(int $id = 0){
-        if(!Login::oneRole(USER_ROLES)){
-            Session::error("No puedes realizar esta operación sin hacer Login.");
-            return redirect('/Login');
-        }
+        Auth::admin();
         $user = User::findOrFail($id, "No se encontró el user");
         return view('user/edit', ['user'=>$user]);
     }
     public function update(){
-        if(!Login::oneRole(USER_ROLES)){
-            Session::error("No puedes realizar esta operación.");
-            return redirect('/Login');
-        }
+        Auth::admin();
         if(!request()->has('actualizar')){
             throw new FormException("No se recibieron datos.");
         }
@@ -121,10 +108,7 @@ class UserController extends Controller{
     }
 
     public function dropcover(){
-        if(!Login::oneRole(USER_ROLES)){
-            Session::error("No puedes realizar esta operación.");
-            return redirect('/Login');
-        }
+        Auth::admin();
         if(!request()->has("borrar")){
             throw new FormException("No se ha recibido el formulario.");
         }
@@ -149,19 +133,13 @@ class UserController extends Controller{
     }
 
     public function delete(int $id = 0){
-        if(!Login::oneRole(USER_ROLES)){
-            Session::error("No puedes realizar esta operación.");
-            return redirect('/');
-        }
+        Auth::admin();
         $user = User::findOrFail($id, "No existe el user");
         return view("user/delete", ["user"=>$user]);
     }
 
     public function destroy(){
-        if(!Login::oneRole(USER_ROLES)){
-            Session::error("No puedes realizar esta operación.");
-            return redirect('/Login');
-        }
+        Auth::admin();
         if(!request()->has("borrar")){
             throw new FormException("No se recibieron datos");
         }
@@ -189,5 +167,22 @@ class UserController extends Controller{
         }
 
     }
+
+    public function block(int $id){
+        Auth::admin();
+        $user = User::findOrFail($id);
+        $user->addRole('ROLE_BLOCKED');
+        $user->update();
+        return redirect("/User");
+   }
+     public function unblock(int $id){
+        Auth::admin();
+        $user = User::findOrFail($id);
+        $user->removeRole('ROLE_BLOCKED');
+        $user->update();
+        return redirect("/User");
+
+   }
+
 
 }

@@ -264,8 +264,10 @@ class Base{
         $html .= "\t\t<li><a href='/'>Inicio</a></li>\n";
 
         // enlace al panel del administrador
-        if(Login::oneRole(ADMIN_PANEL_ROLES))
+        if(Login::oneRole(ADMIN_PANEL_ROLES)){
             $html .= "\t\t<li><a href='/Admin'>Panel del administrador</a></li>\n";
+            $html .= "\t\t<li><a href='/User'>Usuarios</a></li>\n";
+        }
         $html .= "\t\t<li><a href='/Anuncio'>Anuncios</a></li>\n";
 
         // enlace externo a la documentación online en https://fastlight.org

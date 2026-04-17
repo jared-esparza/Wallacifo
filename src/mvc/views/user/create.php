@@ -26,25 +26,30 @@
 
             <form action="/User/store" enctype="multipart/form-data" method="POST">
                 <div class="flex2">
-                    <label>Título:</label>
-                    <input type="text" name="titulo" value="<?= old('titulo')?>">
+                    <label>Nombre:</label>
+                    <input type="text" name="displayname" value="<?= old('displayname')?>">
+                    <br>
+                    <label>Email:</label>
+                    <input type="email" name="email" value="<?= old('email')?>">
+                    <br>
+                    <label>Teléfono:</label>
+                    <input type="text" name="phone" value="<?= old('phone')?>">
+                    <br>
+                    <label>Población:</label>
+                    <input type="text" name="poblacion" value="<?= old('poblacion')?>">
+                    <br>
+                    <label>Código Postal:</label>
+                    <input type="text" name="cp" value="<?= old('cp')?>">
                     <br>
                     <label>Imagen:</label>
-                    <input type="file" name="imagen" id="file-with-preview" accept="image/*">
-                    <br>
-                    <label>Precio:</label>
-                    <input type="number" name="precio" value="<?= old('precio')?>">
-                    <br>
-                    <label>Descripción:</label>
-                    <textarea name="descripcion" class="w50" ><?= old('descripcion')?></textarea>
-                    <br>
+                    <input type="file" name="picture" id="file-with-preview" accept="image/*">
                 </div>
                 <div class="centered mt2">
                     <input type="submit" class="button" name="guardar" value="Guardar">
                     <input type="reset" class="button" value="Reset">
                 </div>
                 <figure class="flex1 centrado">
-                    <img src="<?= ANUNCIO_IMAGE_FOLDER . '/' .($user->imagen ?? DEFAULT_ANUNCIO_IMAGE) ?>" class="cover" id="preview-image">
+                    <img src="<?= USER_IMAGE_FOLDER . '/' .($user->imagen ?? DEFAULT_USER_IMAGE) ?>" class="cover" id="preview-image">
                     <figcaption>Previsualización de la imagen</figcaption>
                 </figure>
             </form>

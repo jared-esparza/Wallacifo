@@ -24,7 +24,7 @@
             <h2>Borrar user</h2>
 
             <form action="/User/destroy" enctype="multipart/form-data" method="POST" class="p2 m2">
-                <p>Confirmar el borrado del user<?= $user->titulo ?></p>
+                <p>Confirmar el borrado del user<?= $user->displayname ?></p>
                 <input type="hidden" name="id" value="<?= $user->id ?>">
                 <input type="submit" class="button-danger" name="borrar" value="Borrar">
             </form>

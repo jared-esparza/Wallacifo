@@ -40,12 +40,13 @@ class AnuncioController extends Controller{
         try{
             $anuncio = Anuncio::create(request()->posts());
 
-
             $file = request()->file('imagen', 8000000, ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
             if($file){
-                $anuncio->portada = $file->store('../public/' . ANUNCIO_IMAGE_FOLDER, 'anuncio_');
-                $anuncio->update();
+                $anuncio->imagen = $file->store('../public/' . ANUNCIO_IMAGE_FOLDER, 'anuncio_');
             }
+            $anuncio->iduser = Login::user()->id;
+            $anuncio->update();
+
             Session::success("Guardado del anuncio $anuncio->titulo correcto.");
             return redirect("/anuncio/show/$anuncio->id");
         }catch(SQLException $e){

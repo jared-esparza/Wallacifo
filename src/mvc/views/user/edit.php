@@ -15,38 +15,45 @@
         <?= $template->menu() ?>
         <?= $template->breadCrumbs([
             'Users'=>'/User/list',
-            'Edición ' . $user->titulo => null
+            'Edición ' . $user->displayname => null
         ]) ?>
         <?= $template->messages() ?>
 
         <main>
             <h1><?= APP_NAME?></h1>
 
-            <h2>Editar el user <?= $user->titulo ?></h2>
+            <h2>Editar el user <?= $user->displayname ?></h2>
 
             <form action="/User/update" enctype="multipart/form-data" method="POST" class="flex2 no-border">
                 <div class="flex2">
                     <input type="hidden" value="<?= $user->id ?>" name="id">
-                    <label>Título:</label>
-                    <input type="text" name="titulo" value="<?= old('titulo', $user->titulo)?>">
+                    <label>Nombre:</label>
+                    <input type="text" name="displayname" value="<?= old('displayname', $user->displayname)?>">
                     <br>
-                    <label>Precio:</label>
-                    <input type="number" name="precio" value="<?= old('precio', $user->precio)?>">
+                    <label>Email:</label>
+                    <input type="email" name="email" value="<?= old('email', $user->email)?>">
+                    <br>
+                    <label>Teléfono:</label>
+                    <input type="text" name="phone" value="<?= old('phone', $user->phone)?>">
+                    <br>
+                    <label>Población:</label>
+                    <input type="text" name="poblacion" value="<?= old('poblacion', $user->poblacion)?>">
+                    <br>
+                    <label>Código Postal:</label>
+                    <input type="text" name="cp" value="<?= old('cp', $user->cp)?>">
                     <br>
                     <label>Imagen:</label>
-                    <input type="file" name="imagen" id="file-with-preview" accept="image/*">
-                    <label>Descripción:</label>
-                    <textarea name="descripcion" class="w50" ><?= old('descripcion', $user->descripcion)?></textarea>
-                    <br>
+                    <input type="file" name="picture" id="file-with-preview" accept="image/*">
                     <div class="centered mt2">
-                    <input type="submit" class="button" name="actualizar" value="Actualizar">
-                    <input type="reset" class="button" value="Reset">
+                        <input type="submit" class="button" name="actualizar" value="Actualizar">
+                        <input type="reset" class="button" value="Reset">
+                    </div>
                 </div>
             </form>
             <figure class="flex1 centrado">
-                <img src="<?= ANUNCIO_IMAGE_FOLDER . '/' .($user->imagen ?? DEFAULT_ANUNCIO_IMAGE) ?>" class="cover" id="preview-image">
-                <figcaption>Imagen de <?= $user->titulo ?></figcaption>
-            <?php if($user->portada){ ?>
+                <img src="<?= ANUNCIO_IMAGE_FOLDER . '/' .($user->picture ?? DEFAULT_ANUNCIO_IMAGE) ?>" class="cover" id="preview-image">
+                <figcaption>Imagen de <?= $user->displayname ?></figcaption>
+            <?php if($user->picture){ ?>
                 <form action="/User/dropcover" method="POST" class="no-border">
                     <input type="hidden" name="id" value="<?= $user->id ?>">
                     <input type="submit" value="Eliminar imagen" name="borrar" class="button-danger">

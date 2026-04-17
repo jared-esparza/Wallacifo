@@ -23,18 +23,20 @@
                 echo $template->filter(
                     // opciones para el desplegable "buscar en"
                     [
-                        'Título' => 'titulo',
-                        'Descripción' => 'descripcion',
-                        'Precio' => 'precio',
+                        'Nombre' => 'displayname',
+                        'Email' => 'email',
+                        'Población' => 'poblacion',
+                        'CP' => 'cp'
                     ],
                     // opciones para el desplegable "ordenar por"
                     [
-                        'Título' => 'titulo',
-                        'Descripción' => 'descripcion',
-                        'Precio' => 'precio',
+                        'Nombre' => 'displayname',
+                        'Email' => 'email',
+                        'Población' => 'poblacion',
+                        'CP' => 'cp'
                     ],
-                    'Tiítulo', // opción seleccionada por defecto en "buscar en"
-                    'Tiítulo', // opción seleccionada por defecto en "ordenar por"
+                    'Nombre', // opción seleccionada por defecto en "buscar en"
+                    'Nombre', // opción seleccionada por defecto en "ordenar por"
                     $filtro  // filtro aplicado (null si no hay) - viene del controlador
                 );?>
             <div class="right">
@@ -44,27 +46,36 @@
                 <div class="grid-list">
                     <div class="grid-list-header">
                         <span>Imagen</span>
-                        <span>Titulo</span>
-                        <span>Descripción</span>
-                        <span>Precio</span>
+                        <span>Nombre</span>
+                        <span>Email</span>
+                        <span>Teléfono</span>
+                        <span>Población</span>
+                        <span>CP</span>
+                        <span>Roles</span>
                         <span class="centrado">Operaciones</span>
                     </div>
                 <?php foreach($users as $user){ ?>
                     <div class="grid-list-item">
                         <span data-label="Imagen" class="centrado">
                             <a href="/User/show/<?= $user->id ?>">
-                                <img src="<?= ANUNCIO_IMAGE_FOLDER . '/' .($user->imagen ?? DEFAULT_ANUNCIO_IMAGE) ?>" class="table-image">
+                                <img src="<?= USER_IMAGE_FOLDER . '/' .($user->picture ?? DEFAULT_USER_IMAGE) ?>" class="table-image">
                             </a>
                         </span>
-                        <span data-label="Título"><?= $user->titulo ?></span>
-                        <span data-label="Descripción"><?= $user->descripcion ?></span>
-                        <span data-label="Precio"><?= $user->precio ?></span>
+                        <span data-label="Nombre"><?= $user->displayname ?></span>
+                        <span data-label="Email"><?= $user->email ?></span>
+                        <span data-label="Teléfono"><?= $user->phone ?></span>
+                        <span data-label="Población"><?= $user->poblacion ?></span>
+                        <span data-label="CP"><?= $user->cp ?></span>
+                        <span data-label="Roles"><?= implode(", ", $user->roles) ?></span>
                         <span data-label="Operaciones" class="centrado">
-                           <a href="/User/show/<?= $user->id ?>">Ver</a>
-                           <?php if(Login::user() && Login::user()->id == $user->iduser){ ?>
+                            <a href="/User/show/<?= $user->id ?>">Ver</a>
                             <a href="/User/edit/<?= $user->id ?>">Editar</a>
                             <a href="/User/delete/<?= $user->id ?>">Borrar</a>
-                           <?php } ?>
+                             <?php if( in_array('ROLE_BLOCKED', $user->getRoles()) ){ ?>
+                                <a href="/User/unblock/<?= $user->id ?>">Desbloquear</a>
+                            <?php } else {?>
+                                <a href="/User/block/<?= $user->id ?>">Bloquear</a>
+                            <?php } ?>
                         </span>
                     </div>
                 <?php } ?>
@@ -76,9 +87,7 @@
                 </div>
             <?php } ?>
             <div class="centered">
-                <?php if(Login::user()){ ?>
-                 <a class="button-success flex1" href="/User/create">Nuevo user</a>
-                 <?php } ?>
+                <a class="button-success flex1" href="/User/create">Nuevo user</a>
                 <a class="button" onclick="history.back()">Atrás</a>
             </div>
         </main>

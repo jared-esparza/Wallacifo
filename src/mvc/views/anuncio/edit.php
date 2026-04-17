@@ -39,8 +39,9 @@
                     <textarea name="descripcion" class="w50" ><?= old('descripcion', $anuncio->descripcion)?></textarea>
                     <br>
                     <div class="centered mt2">
-                    <input type="submit" class="button" name="actualizar" value="Actualizar">
-                    <input type="reset" class="button" value="Reset">
+                        <input type="submit" class="button" name="actualizar" value="Actualizar">
+                        <input type="reset" class="button" value="Reset">
+                    </div>
                 </div>
             </form>
             <figure class="flex1 centrado">

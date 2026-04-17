@@ -12,25 +12,26 @@
     </head>
     <body>
 
-        <?= $template->header('Detalle de ' . $user->titulo) ?>
+        <?= $template->header('Detalle de ' . $user->displayname) ?>
         <?= $template->menu() ?>
         <?= $template->breadCrumbs([
             'Users'=>'/User/list',
-            'Detalles de ' . $user->titulo => null
+            'Detalles de ' . $user->displayname => null
         ]) ?>
         <?= $template->messages() ?>
 
         <main>
             <section class="flex-container gap2" id="detalles">
                 <div class="flex2">
-                    <h2><?= $user->titulo?></h2>
-                    <p><b>Titulo:</b> <?= $user->titulo?></p>
-                    <p><b>Descripción:</b> <?= $user->descripcion?></p>
-                    <p><b>Precio:</b> <?= $user->precio?></p>
+                    <h2><?= $user->displplayname?></h2>
+                    <p><b>Email:</b> <?= $user->email?></p>
+                    <p><b>Teléfono:</b> <?= $user->phone?></p>
+                    <p><b>Población:</b> <?= $user->poblacion?></p>
+                    <p><b>CP:</b> <?= $user->cp?></p>
                 </div>
                 <figure class="flex1 centrado p2">
-                    <img src="<?= ANUNCIO_IMAGE_FOLDER . '/' .($user->portada ?? DEFAULT_ANUNCIO_IMAGE) ?>" class="cover with-modal">
-                    <figcaption>Portada de <?= "$user->titulo" ?></figcaption>
+                    <img src="<?= USER_IMAGE_FOLDER . '/' .($user->picture ?? DEFAULT_USER_IMAGE) ?>" class="cover with-modal">
+                    <figcaption>Imagen de <?= "$user->displayname" ?></figcaption>
                 </figure>
             </section>
             <div class="centrado">
