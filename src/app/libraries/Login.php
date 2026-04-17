@@ -1,0 +1,199 @@
+<?php
+
+/** Login
+  *
+  * Autenticación de usuarios.
+  * Implementa las operaciones de login/logout y también permite hacer comprobaciones
+  * sobre los distintos roles de que dispone el usuario identificado.
+  *
+  * Última revisión: 31/03/2026
+  *
+  * @author Robert Sallent <robert@fastlight.org>
+  *
+  * @since v2.2.0 se trabaja directamente con objetos User
+  * @since v2.6.5 método unset() para eliminar el usuario de la sesión pero no el resto de datos
+  */
+
+
+class Login{
+
+    /**
+     * @var ?User $activeUser contiene el usuario identificado en la aplicación.
+     *  No dispone de setter, así que es de solamente lectura.
+     *  */
+    private static ?User $activeUser = NULL;
+
+
+
+    /**
+     * Tareas de inicialización del sistema de login.
+     *
+     * - Recupera el usuario desde la variable de sesión.
+     * - Borra la operación pendiente.
+     *
+     * Este método es invocado desde el constructor del Kernel, no
+     * es necesario usarlo explícitamente desde ningún otro lugar.
+     */
+    public static function init(){
+
+        // recupera el usuario activo de la variable de sesión
+        self::$activeUser = Session::get('user') ??  NULL;
+
+        /*
+         * Si hay operación pendiente, pero no estamos en /Login, eliminaremos la operación pendiente.
+         * Esto es para los casos en que el usuario no identificado solicita una URL protegida, pero
+         * finalmente no llega a identificarse correctamente.
+         * Así evitamos que se haga la redirección en una identificación posterior.
+         */
+        if(Session::has('_pending_operation') && !URL::beginsWith('/Login'))
+            Session::forget('_pending_operation');
+    }
+
+
+
+    /**
+     * Hace login, estableciendo el usuario.
+     *
+     * Se usa desde LoginController::enter() y en principio no tendremos
+     * necesidad de usarlo desde ningún otro lugar.
+     *
+     * @param User $user
+     */
+    public static function set(User $user){
+
+        self::$activeUser = $user;
+
+        // guarda en sesión el usuario para que sea recordado (hace login)
+	    Session::set('user', $user);
+	}
+
+
+
+	/**
+	 * Elimina el usuario de la sesión, pero no el resto de datos.
+	 *
+	 * Se usa desde el middleware BlockedUser, para echar al usuario.
+	 *
+	 */
+	public static function unset(){
+	    self::$activeUser = NULL;
+	    Session::forget('user');
+	}
+
+
+
+	/**
+	 * Hace logout olvidando el usuario, limpiando la sesión, eliminando
+	 * la cookie de sesión y destruyendo los datos del servidor.
+	 *
+	 * Se invoca desde LogoutController::index().
+	 *
+	 * Si implementamos la operación "baja de usuario", también debemos
+	 * invocar a este método para garantizar que se "expulsa" al usuario
+	 * una vez eliminado del sistema.
+	 */
+	public static function clear(){
+
+	    self::$activeUser = NULL;
+
+	    // elimina completamente la sesión (array, cookie y fichero)
+	    Session::destroy();
+	}
+
+
+
+	/**
+	 * Recupera el usuario identificado.
+	 *
+	 * @return User|NULL el usuario identificado o NULL si no hay nadie identificado.
+	 */
+	public static function user():?User{
+	    return self::$activeUser;
+	}
+
+
+
+	/**
+	 * Alias de Login::user()
+	 *
+	 * @return User|NULL el usuario identificado o NULL si no hay nadie identificado.
+	 */
+	public static function get():?User{
+	    return self::user();
+	}
+
+
+
+	/**
+	 * Comprueba si hay alguien identificado.
+	 *
+	 * @return bool true si hay alguien identificado o false en caso contrario.
+	 */
+	public static function check():bool{
+	    return !empty(self::user());
+	}
+
+
+
+	/**
+	 * Comprueba si no hay nadie identificado.
+	 *
+	 * @return bool true si no hay nadie identificado o false si sí lo hay.
+	 */
+	public static function guest():bool{
+	    return empty(self::user());
+	}
+
+
+
+	/**
+	 * Comprueba si se encuentra identificado un usuario administrador.
+	 *
+	 * @param string $adminRole rol de administrador, por defecto ROLE_ADMIN.
+	 *
+	 * @return bool true si el usuario identificado es administrador o false si no lo es o no hay usuario identificado.
+	 */
+	public static function isAdmin(string $adminRole = 'ROLE_ADMIN'):bool{
+	    return self::$activeUser && self::$activeUser->hasRole($adminRole);
+	}
+
+
+
+	/**
+	 * Comprueba si el usuario identificado tiene un rol determinado.
+	 *
+	 * @param string $role rol a comprobar.
+	 *
+	 * @return bool true si el usuario tiene ese rol, false en caso contrario.
+	 */
+	public static function role(string $role):bool{
+	    return self::user() && self::user()->hasRole($role);
+	}
+
+
+
+	/**
+	 * Comprueba si el usuario identificado tiene todos los roles en una lista.
+	 *
+	 * @param array $roles lista de roles a comprobar.
+	 *
+	 * @return bool true si el usuario tiene todos los roles de la lista, false en cualquier otro caso.
+	 */
+	public static function allRoles(array $roles):bool{
+	    return self::user() && self::user()->allRoles($roles);
+	}
+
+
+
+	/**
+	 * Comprueba si el usuario identificado tiene alguno de los roles indicados en una lista.
+	 *
+	 * @param array $roles lista de roles a comprobar.
+	 *
+	 * @return bool true si el usuario identificado tiene alguno de los roles indicados, false en cualquier otro caso.
+	 */
+	public static function oneRole(array $roles):bool{
+	    return self::user() && self::user()->oneRole($roles);
+    }
+
+}
