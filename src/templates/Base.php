@@ -149,15 +149,6 @@ class Base{
         $html = "<nav id='access-bar'>";
 
 
-        // enlaces a las redes sociales
-        $html .= "\t<div class='left no-print'>
-                        <a class='social-icon' href='https://www.linkedin.com/in/robert-sallent-l%C3%B3pez-4187a866'>
-                            <img src='/images/logos/linkedin.png' alt='LinkediIn'>
-                        </a><a class='social-icon' href='https://github.com/robertsallent/fastlight'>
-                            <img src='/images/logos/github.png' alt='GitHub'>
-                        </a>
-                    </div>";
-
 
         // Opciones de LogIn y LogOut
         // si el usuario no está identificado

@@ -13,7 +13,6 @@
 	</head>
 
 	<body>
-		<?= $template->login() ?>
 		<?= $template->menu() ?>
 		<?= $template->header(null, 'Para desarrollo web y APIs RESTFUL') ?>
 		<?= $template->messages() ?>
