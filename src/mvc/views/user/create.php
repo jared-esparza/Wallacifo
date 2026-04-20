@@ -32,6 +32,9 @@
                     <label>Email:</label>
                     <input type="email" name="email" value="<?= old('email')?>">
                     <br>
+                    <label>Contraseña:</label>
+                    <input type="password" name="password" value="<?= old('password')?>">
+                    <br>
                     <label>Teléfono:</label>
                     <input type="text" name="phone" value="<?= old('phone')?>">
                     <br>

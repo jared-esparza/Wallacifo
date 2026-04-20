@@ -29,8 +29,8 @@
                     <p><b>Precio:</b> <?= $anuncio->precio?></p>
                 </div>
                 <figure class="flex1 centrado p2">
-                    <img src="<?= ANUNCIO_IMAGE_FOLDER . '/' .($anuncio->portada ?? DEFAULT_ANUNCIO_IMAGE) ?>" class="cover with-modal">
-                    <figcaption>Portada de <?= "$anuncio->titulo" ?></figcaption>
+                    <img src="<?= ANUNCIO_IMAGE_FOLDER . '/' .($anuncio->imagen ?? DEFAULT_ANUNCIO_IMAGE) ?>" class="cover with-modal">
+                    <figcaption>Imagen de <?= "$anuncio->titulo" ?></figcaption>
                 </figure>
             </section>
             <div class="centrado">

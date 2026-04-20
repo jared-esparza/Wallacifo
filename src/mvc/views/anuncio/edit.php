@@ -47,7 +47,7 @@
             <figure class="flex1 centrado">
                 <img src="<?= ANUNCIO_IMAGE_FOLDER . '/' .($anuncio->imagen ?? DEFAULT_ANUNCIO_IMAGE) ?>" class="cover" id="preview-image">
                 <figcaption>Imagen de <?= $anuncio->titulo ?></figcaption>
-            <?php if($anuncio->portada){ ?>
+            <?php if($anuncio->imagen){ ?>
                 <form action="/Anuncio/dropcover" method="POST" class="no-border">
                     <input type="hidden" name="id" value="<?= $anuncio->id ?>">
                     <input type="submit" value="Eliminar imagen" name="borrar" class="button-danger">

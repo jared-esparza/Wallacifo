@@ -38,13 +38,14 @@ class AnuncioController extends Controller{
             throw new FormException("No se recibió el formulario");
         }
         try{
-            $anuncio = Anuncio::create(request()->posts());
+            $values = request()->posts();
+            $values ["iduser"] = Login::user()->id;
+            $anuncio = Anuncio::create($values);
 
             $file = request()->file('imagen', 8000000, ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
             if($file){
                 $anuncio->imagen = $file->store('../public/' . ANUNCIO_IMAGE_FOLDER, 'anuncio_');
             }
-            $anuncio->iduser = Login::user()->id;
             $anuncio->update();
 
             Session::success("Guardado del anuncio $anuncio->titulo correcto.");
@@ -70,31 +71,34 @@ class AnuncioController extends Controller{
     }
 
     public function edit(int $id = 0){
-        if(!Login::oneRole(USER_ROLES)){
+        $anuncio = Anuncio::findOrFail($id, "No se encontró el anuncio");
+        if(!$anuncio->checkOwner()){
             Session::error("No puedes realizar esta operación sin hacer Login.");
             return redirect('/Login');
         }
-        $anuncio = Anuncio::findOrFail($id, "No se encontró el anuncio");
+
         return view('anuncio/edit', ['anuncio'=>$anuncio]);
     }
     public function update(){
-        if(!Login::oneRole(USER_ROLES)){
+        $id = intval(request()->post('id'));
+        $anuncio = Anuncio::findOrFail($id, 'No se ha encontrado el anuncio');
+
+        if(!$anuncio->checkOwner()){
             Session::error("No puedes realizar esta operación.");
             return redirect('/Login');
         }
         if(!request()->has('actualizar')){
             throw new FormException("No se recibieron datos.");
         }
-        $id = intval(request()->post('id'));
         try{
             $anuncio = Anuncio::create(request()->posts(), $id);
             $anuncio = Anuncio::findOrFail($id, 'No se ha encontrado el anuncio');
-            $file = request()->file('portada', 8000000, ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
+            $file = request()->file('imagen', 8000000, ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
             if($file){
                 if($anuncio->imagen){
                     File::remove('../public/' . ANUNCIO_IMAGE_FOLDER . '/' . $anuncio->imagen);
                 }
-                $anuncio->portada = $file->store('../public/'.ANUNCIO_IMAGE_FOLDER, 'anuncio_');
+                $anuncio->imagen = $file->store('../public/'.ANUNCIO_IMAGE_FOLDER, 'anuncio_');
                 $anuncio->update();
             }
             Session::success("Actualización del anuncio $anuncio->titulo correcta.");
@@ -122,15 +126,16 @@ class AnuncioController extends Controller{
     }
 
     public function dropcover(){
-        if(!Login::oneRole(USER_ROLES)){
+        $id = request()->post("id");
+        $anuncio = Anuncio::findOrFail($id, "No se ha encontrado el anuncio.");
+        if(!$anuncio->checkOwner()){
             Session::error("No puedes realizar esta operación.");
             return redirect('/Login');
         }
         if(!request()->has("borrar")){
             throw new FormException("No se ha recibido el formulario.");
         }
-        $id = request()->post("id");
-        $anuncio = Anuncio::findOrFail($id, "No se ha encontrado el anuncio.");
+
 
         $tmp = $anuncio->imagen;
         $anuncio->imagen = NULL;
@@ -150,28 +155,29 @@ class AnuncioController extends Controller{
     }
 
     public function delete(int $id = 0){
-        if(!Login::oneRole(USER_ROLES)){
+        $anuncio = Anuncio::findOrFail($id, "No existe el anuncio");
+        if(!$anuncio->checkOwner()){
             Session::error("No puedes realizar esta operación.");
             return redirect('/');
         }
-        $anuncio = Anuncio::findOrFail($id, "No existe el anuncio");
         return view("anuncio/delete", ["anuncio"=>$anuncio]);
     }
 
     public function destroy(){
-        if(!Login::oneRole(USER_ROLES)){
+        $id = intval(request()->post("id"));
+        $anuncio = Anuncio::findOrFail($id);
+        if(!$anuncio->checkOwner()){
             Session::error("No puedes realizar esta operación.");
             return redirect('/Login');
         }
         if(!request()->has("borrar")){
             throw new FormException("No se recibieron datos");
         }
-        $id = intval(request()->post("id"));
-        $anuncio = Anuncio::findOrFail($id);
+
         try{
             $anuncio->deleteObject();
              if($anuncio->imagen){
-                File::remove('../public/' . ANUNCIO_IMAGE_FOLDER . '/' . $anuncio->portada);
+                File::remove('../public/' . ANUNCIO_IMAGE_FOLDER . '/' . $anuncio->imagen);
             }
             Session::success("Se ha borrado el anuncio $anuncio->titulo.");
             return redirect("/anuncio/list");
@@ -182,7 +188,7 @@ class AnuncioController extends Controller{
             }
             return redirect("/anuncio/delete/$id");
         }catch(FileException $e){
-            Session::warning('No se pudo eliminar la portada.');
+            Session::warning('No se pudo eliminar la imagen.');
             if(DEBUG){
                 throw new UploadException($e->getMessage());
             }
@@ -190,5 +196,4 @@ class AnuncioController extends Controller{
         }
 
     }
-
 }

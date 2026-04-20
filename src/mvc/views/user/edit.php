@@ -51,7 +51,7 @@
                 </div>
             </form>
             <figure class="flex1 centrado">
-                <img src="<?= ANUNCIO_IMAGE_FOLDER . '/' .($user->picture ?? DEFAULT_ANUNCIO_IMAGE) ?>" class="cover" id="preview-image">
+                <img src="<?= USER_IMAGE_FOLDER . '/' .($user->picture ?? DEFAULT_USER_IMAGE) ?>" class="cover" id="preview-image">
                 <figcaption>Imagen de <?= $user->displayname ?></figcaption>
             <?php if($user->picture){ ?>
                 <form action="/User/dropcover" method="POST" class="no-border">
@@ -61,14 +61,6 @@
             <?php } ?>
 
             </figure>
-            <section>
-                <script>
-                    function confirmar(id){
-                        if(confirm('¿Seguro que desea eliminar?')){
-                            location.href='/Ejemplar/destroy/'+id;
-                        }
-                    }
-                </script>
             <div class="centrado my2">
                 <a class="button" onclick="history.back()">Atrás</a>
                 <a class="button" href="/user/list">Lista de users</a>

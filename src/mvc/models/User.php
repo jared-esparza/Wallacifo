@@ -17,7 +17,7 @@ class User extends Model{
 
 
     /** @var array $fillable lista de campos permitidos para asignaciones masivas usando el método create() */
-    protected static $fillable = ['displayname', 'email', 'phone', 'password', 'picture'];
+    protected static $fillable = ['displayname', 'email', 'phone', 'password', 'picture', 'poblacion', 'cp'];
 
 
     /**

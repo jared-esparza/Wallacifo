@@ -2,7 +2,7 @@
 #[\AllowDynamicProperties]
 
 class Anuncio extends Model{
-    protected static $fillable = ["titulo", "precio", "userid", "imagen"];
+    protected static $fillable = ["titulo", "precio", "iduser", "imagen", "descripcion"];
 
     public function validate():array{
         $errores = [];
@@ -12,6 +12,9 @@ class Anuncio extends Model{
         }
 
         return $errores;
+    }
+    public function checkOwner(){
+        return $this->iduser == Login::user()->id;
     }
 
 }

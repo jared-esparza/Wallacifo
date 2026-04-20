@@ -34,15 +34,19 @@ class UserController extends Controller{
             $user = User::create(request()->posts());
 
             $user->addRole('ROLE_USER');
-            $file = request()->file('imagen', 8000000, ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
+            $user->password = md5($user->password);
+            $file = request()->file('picture', 8000000, ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
             if($file){
-                $user->portada = $file->store('../public/' . ANUNCIO_IMAGE_FOLDER, 'user_');
+                $user->picture = $file->store('../public/' . USER_IMAGE_FOLDER, 'user_');
             }
             $user->update();
-            Session::success("Guardado del user $user->titulo correcto.");
+            Session::success("Guardado del user $user->displayname correcto.");
             return redirect("/user/show/$user->id");
-        }catch(SQLException $e){
-            $mensaje = "No se pudo guardar el user $user->titulo.";
+        }catch(Exception $e){
+            echo $e->getMessage();
+        }
+        catch(SQLException $e){
+            $mensaje = "No se pudo guardar el user $user->displayname.";
 
             Session::error($mensaje);
             if(DEBUG){
@@ -75,18 +79,18 @@ class UserController extends Controller{
         try{
             $user = User::create(request()->posts(), $id);
             $user = User::findOrFail($id, 'No se ha encontrado el user');
-            $file = request()->file('portada', 8000000, ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
+            $file = request()->file('picture', 8000000, ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
             if($file){
-                if($user->imagen){
-                    File::remove('../public/' . ANUNCIO_IMAGE_FOLDER . '/' . $user->imagen);
+                if($user->picture){
+                    File::remove('../public/' . USER_IMAGE_FOLDER . '/' . $user->picture);
                 }
-                $user->portada = $file->store('../public/'.ANUNCIO_IMAGE_FOLDER, 'user_');
+                $user->picture = $file->store('../public/'.USER_IMAGE_FOLDER, 'user_');
                 $user->update();
             }
-            Session::success("Actualización del user $user->titulo correcta.");
+            Session::success("Actualización del user $user->displayname correcta.");
             return redirect("/user/edit/$id");
         }catch(SQLException $e){
-            $mensaje = "No se pudo actualizar el user $user->titulo.";
+            $mensaje = "No se pudo actualizar el user $user->displayname.";
 
             Session::error($mensaje);
             if(DEBUG){
@@ -115,13 +119,13 @@ class UserController extends Controller{
         $id = request()->post("id");
         $user = User::findOrFail($id, "No se ha encontrado el user.");
 
-        $tmp = $user->imagen;
-        $user->imagen = NULL;
+        $tmp = $user->picture;
+        $user->picture = NULL;
 
         try{
             $user->update();
-            File::remove('../public/' . ANUNCIO_IMAGE_FOLDER . '/' . $tmp, true);
-            Session::success("Borrado de la imagen de user $user->titulo correcta.");
+            File::remove('../public/' . USER_IMAGE_FOLDER . '/' . $tmp, true);
+            Session::success("Borrado de la imagen de user $user->displayname correcta.");
             return redirect("/user/edit/$id");
         }catch(FileException $e){
             Session::warning('No se pudo eliminar la imagen.');
@@ -147,19 +151,19 @@ class UserController extends Controller{
         $user = User::findOrFail($id);
         try{
             $user->deleteObject();
-             if($user->imagen){
-                File::remove('../public/' . ANUNCIO_IMAGE_FOLDER . '/' . $user->portada);
+             if($user->picture){
+                File::remove('../public/' . USER_IMAGE_FOLDER . '/' . $user->picture);
             }
-            Session::success("Se ha borrado el user $user->titulo.");
+            Session::success("Se ha borrado el user $user->displayname.");
             return redirect("/user/list");
         }catch(SQLException $e){
-            Session::error("No se pudo borrar el user $user->titulo.");
+            Session::error("No se pudo borrar el user $user->displayname.");
             if(DEBUG){
                 throw new SQLException($e->getMessage());
             }
             return redirect("/user/delete/$id");
         }catch(FileException $e){
-            Session::warning('No se pudo eliminar la portada.');
+            Session::warning('No se pudo eliminar la imagen.');
             if(DEBUG){
                 throw new UploadException($e->getMessage());
             }
