@@ -69,7 +69,7 @@ define('AUTOLOAD_DIRECTORIES',  [
  * APLICACIÓN
  * -------------------------------------------------------------*/
 
-define('APP_NAME', 'FastLight Framework 2'); // Título de la aplicación.
+define('APP_NAME', 'WallaCIFO'); // Título de la aplicación.
 define('APP_TYPE', 'WEB');       // Tipo de aplicación: WEB o API.
 
 // para las etiquetas META de autor (en el template)

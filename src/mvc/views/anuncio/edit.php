@@ -35,7 +35,9 @@
                     <br>
                     <label>Imagen:</label>
                     <input type="file" name="imagen" id="file-with-preview" accept="image/*">
+                    <br>
                     <label>Descripción:</label>
+                    <br>
                     <textarea name="descripcion" class="w50" ><?= old('descripcion', $anuncio->descripcion)?></textarea>
                     <br>
                     <div class="centered mt2">

@@ -188,5 +188,13 @@ class UserController extends Controller{
 
    }
 
+   public function home(){
+        if(Login::guest()){
+            return redirect('/Login');
+        }
+        $anuncios = Login::user()->hasMany('Anuncio');
+        return view('panel/home', ['anuncios'=> $anuncios]);
+   }
+
 
 }

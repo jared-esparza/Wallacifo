@@ -262,6 +262,9 @@ class Base{
 
         // enlace a inicio
         $html .= "\t\t<li><a href='/'>Inicio</a></li>\n";
+        if(Login::check()){
+            $html .= "\t\t<li><a href='/User/home'>Home</a></li>\n";
+        }
 
         // enlace al panel del administrador
         if(Login::oneRole(ADMIN_PANEL_ROLES)){
