@@ -272,6 +272,7 @@ class Base{
             $html .= "\t\t<li><a href='/User'>Usuarios</a></li>\n";
         }
         $html .= "\t\t<li><a href='/Anuncio'>Anuncios</a></li>\n";
+        $html .= "\t\t<li><a href='/Contacto'>Contacto</a></li>\n";
 
         // enlace externo a la documentación online en https://fastlight.org
 

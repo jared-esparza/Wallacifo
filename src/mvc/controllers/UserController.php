@@ -18,6 +18,7 @@ class UserController extends Controller{
     }
 
     public function show(int $id = 0){
+        Auth::admin();
         $user = User::findOrFail($id);
         return view('user/show', ['user'=>$user]);
     }
@@ -66,16 +67,21 @@ class UserController extends Controller{
     }
 
     public function edit(int $id = 0){
-        Auth::admin();
         $user = User::findOrFail($id, "No se encontró el user");
+        if(Login::user()->id != $user->id && !Login::isAdmin()){
+            Auth::admin();
+        }
         return view('user/edit', ['user'=>$user]);
     }
     public function update(){
-        Auth::admin();
+        $id = intval(request()->post('id'));
+        $user = User::findOrFail($id, "No se encontró el user");
+        if(Login::user()->id != $user->id && !Login::isAdmin()){
+            Auth::admin();
+        }
         if(!request()->has('actualizar')){
             throw new FormException("No se recibieron datos.");
         }
-        $id = intval(request()->post('id'));
         try{
             $user = User::create(request()->posts(), $id);
             $user = User::findOrFail($id, 'No se ha encontrado el user');
@@ -192,8 +198,9 @@ class UserController extends Controller{
         if(Login::guest()){
             return redirect('/Login');
         }
-        $anuncios = Login::user()->hasMany('Anuncio');
-        return view('panel/home', ['anuncios'=> $anuncios]);
+        $user = Login::user();
+        $anuncios = $user->hasMany('Anuncio');
+        return view('panel/home', ['user'=>$user, 'anuncios'=> $anuncios]);
    }
 
 
