@@ -42,7 +42,7 @@ class UserController extends Controller{
             }
             $user->update();
             Session::success("Guardado del user $user->displayname correcto.");
-            return redirect("/user/show/$user->id");
+            return redirect("/Login");
         }catch(Exception $e){
             echo $e->getMessage();
         }

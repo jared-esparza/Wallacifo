@@ -48,6 +48,7 @@
 
     			<div class="centered my3">
     				<input type="submit" class="button phone75" value="LogIn">
+					<a class='button-light' href='/User/create'>Registro</a>
     			</div>
     			<div class="right phone-centered">
     				<a class="button-light phone75" href="/forgot-password">Olvidé mi clave</a>
