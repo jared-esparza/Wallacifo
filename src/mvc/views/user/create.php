@@ -11,7 +11,7 @@
     </head>
     <body>
 
-        <?= $template->header('Borrar user') ?>
+        <?= $template->header('Crear user') ?>
         <?= $template->menu() ?>
         <?= $template->breadCrumbs([
             'Users'=>'/User/list',

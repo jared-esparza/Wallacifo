@@ -11,7 +11,7 @@
     </head>
     <body>
 
-        <?= $template->header('Borrar anuncio') ?>
+        <?= $template->header('Crear anuncio') ?>
         <?= $template->menu() ?>
         <?= $template->breadCrumbs([
             'Anuncios'=>'/Anuncio/list',
